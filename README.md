@@ -7,6 +7,8 @@ This project is free to use and modify. You will need to create your own Discord
 ---
 
 ## Features
+You can search for the following by using either a title/person's name/their TMDB ID or their IMDb ID.
+
 - Search movies
 - Search TV shows
 - Search people (actors, directors, etc.)
@@ -75,11 +77,14 @@ node index.js
 
 Example slash commands:
 
+Using a title's name:
 **/movie** **title:** The Matrix **year:** 1999
 
-**/tv** **title:** The X-Files
+Using a TMDB ID:
+**/tv** **title:** 4087
 
-**/person** **name:** David Lean
+Using an IMDb ID:
+**/person** **name:** nm0000180
 
 ---
 

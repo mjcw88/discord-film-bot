@@ -78,13 +78,16 @@ node index.js
 Example slash commands:
 
 Using a title's name:
-**/movie** **title:** The Matrix **year:** 1999
+
+- **/movie** **title:** The Matrix **year:** 1999
 
 Using a TMDB ID:
-**/tv** **title:** 4087
+
+- **/tv** **title:** 4087
 
 Using an IMDb ID:
-**/person** **name:** nm0000180
+
+- **/person** **name:** nm0000180
 
 ---
 

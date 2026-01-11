@@ -88,12 +88,6 @@ Using an IMDb ID:
 
 ---
 
-#### TMDB Attribution
-
-This product uses the TMDB API but is not endorsed or certified by TMDB.
-
----
-
 #### License
 
 MIT — free to use, modify, and distribute.

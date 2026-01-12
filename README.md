@@ -80,14 +80,20 @@ Example slash commands:
 Using a title's name:
 
 - **/movie** **title:** The Matrix **year:** 1999
+  
+![Screenshot showcasing API fetch results for the movie 'The Matrix'](https://github.com/mjcw88/discord-film-bot/blob/main/slashcommandexample01.png?raw=true)
 
 Using a TMDB ID:
 
 - **/tv** **title:** 4087
 
+![Screenshot showcasing API fetch results for the TV show 'The X-Files'](https://github.com/mjcw88/discord-film-bot/blob/main/slashcommandexample02.png?raw=true)
+
 Using an IMDb ID:
 
 - **/person** **name:** nm0000180
+
+![Screenshot showcasing API fetch results for director 'Sir David Lean'](https://github.com/mjcw88/discord-film-bot/blob/main/slashcommandexample03.png?raw=true)
 
 ---
 

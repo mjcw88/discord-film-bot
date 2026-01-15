@@ -44,7 +44,7 @@ async function tvsimilar(interaction, REGION, TIMEOUT, MAX_DIGITS, MESSAGES) {
         // Create a Discord embed with the similar TV Show's
         const embed = new EmbedBuilder()
             .setTitle(`\u200E\u200B${tvData.name} ${getOriginalRun(tvData.first_air_date, tvData.last_air_date, tvData.status)}`)
-            .setThumbnail(`https://image.tmdb.org/t/p/original${tvData.poster_path}`)
+            .setThumbnail(`https://image.tmdb.org/t/p/w500${tvData.poster_path}`)
             .setDescription(`\u200E\u200BSimilar TV shows to ${tvData.name}.`)
             .setFooter({ text: `Page ${page} of ${totalPages}`});
         

@@ -36,7 +36,7 @@ async function tv(interaction, REGION, MAX, TIMEOUT, MAX_DIGITS, MESSAGES) {
         const embed = new EmbedBuilder()
             .setTitle(`\u200E\u200B${tvData.name}`)
             .setDescription(`\u200E\u200B${tvData.overview || "Plot synopsis unavailable."}`)
-            .setThumbnail(`https://image.tmdb.org/t/p/original${tvData.poster_path}`)
+            .setThumbnail(`https://image.tmdb.org/t/p/w500${tvData.poster_path}`)
         
         if (tvData.tagline) {
             embed.addFields({ name: '🏷️ - Tagline', value: `\u200E\u200B${tvData.tagline}` });

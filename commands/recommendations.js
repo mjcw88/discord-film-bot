@@ -45,7 +45,7 @@ async function recommendations(interaction, REGION, TIMEOUT, MAX_DIGITS, MESSAGE
         // Create a Discord embed with the movie recommendations information
         const embed = new EmbedBuilder()
             .setTitle(`\u200E\u200B${movieData.title} ${year}`)
-            .setThumbnail(`https://image.tmdb.org/t/p/original${movieData.poster_path}`)
+            .setThumbnail(`https://image.tmdb.org/t/p/w500${movieData.poster_path}`)
             .setDescription(`\u200E\u200BRecommendations for ${movieData.title}.`)
             .setFooter({ text: `Page ${page} of ${totalPages}`});
         

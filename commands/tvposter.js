@@ -27,7 +27,7 @@ async function tvposter(interaction, REGION, TIMEOUT, MAX_DIGITS, MESSAGES) {
         // Create a Discord embed with the TV Show poster
         const embed = new EmbedBuilder()
             .setTitle(`\u200E\u200B${tvData.name} ${getOriginalRun(tvData.first_air_date, tvData.last_air_date, tvData.status)}`)
-            .setImage(`https://image.tmdb.org/t/p/original${tvData.poster_path}`)
+            .setImage(`https://image.tmdb.org/t/p/w500${tvData.poster_path}`)
 
         await interaction.editReply({ embeds: [embed] });     
     } catch (error) {

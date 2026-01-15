@@ -25,7 +25,7 @@ async function headshot(interaction, REGION, TIMEOUT, MAX_DIGITS, MESSAGES) {
         // Create a Discord embed with the person's information
         const embed = new EmbedBuilder()
             .setTitle(`\u200E\u200B${personData.name}`)
-            .setImage(`https://image.tmdb.org/t/p/original${personData.profile_path}`)
+            .setImage(`https://image.tmdb.org/t/p/w500${personData.profile_path}`)
         
         await interaction.editReply({ embeds: [embed] });     
     } catch (error) {

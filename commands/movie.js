@@ -35,7 +35,7 @@ async function movie(interaction, REGION, MAX, TIMEOUT, MAX_DIGITS, MESSAGES) {
         // Create a Discord embed with the movie's information
         const embed = new EmbedBuilder()
             .setTitle(`\u200E\u200B${movieData.title}`)
-            .setThumbnail(`https://image.tmdb.org/t/p/original${movieData.poster_path}`)
+            .setThumbnail(`https://image.tmdb.org/t/p/w500${movieData.poster_path}`)
             .setDescription(`\u200E\u200B${movieData.overview || "Plot synopsis unavailable."}`)
 
         if (movieData.tagline) {

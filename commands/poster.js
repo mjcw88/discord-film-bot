@@ -29,7 +29,7 @@ async function poster(interaction, REGION, TIMEOUT, MAX_DIGITS, MESSAGES) {
         // Create a Discord embed with the poster information
         const embed = new EmbedBuilder()
             .setTitle(`\u200E\u200B${movieData.title} ${year}`)
-            .setImage(`https://image.tmdb.org/t/p/original${movieData.poster_path}`)
+            .setImage(`https://image.tmdb.org/t/p/w500${movieData.poster_path}`)
 
         await interaction.editReply({ embeds: [embed] });     
     } catch (error) {

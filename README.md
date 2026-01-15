@@ -2,7 +2,7 @@
 
 A Discord bot that uses [The Movie Database (TMDB)](https://www.themoviedb.org/) API to fetch information about movies, TV shows, and people.
 
-This project is free to use and modify. You will need to create your own Discord bot and TMDB API key.
+This project is free to use and modify but you will need to create your own Discord bot and TMDB API key.
 
 ---
 
@@ -27,7 +27,7 @@ You can search for the following by using either a title/person's name/their TMD
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/yourusername/discord-film-bot.git
+git clone https://github.com/mjcw88/discord-film-bot.git
 cd discord-film-bot
 ```
 

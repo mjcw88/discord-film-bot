@@ -8,6 +8,8 @@ async function trailer(interaction, REGION, TIMEOUT, MAX_DIGITS, MESSAGES) {
     const input = interaction.options.getString("title");
     const year = interaction.options.getInteger("year");
 
+    const languagesArray = ["en","fr","es","de","ja"]
+
     try {
         // Defer the reply to prevent the interaction from timing out
         await interaction.deferReply();
@@ -19,7 +21,15 @@ async function trailer(interaction, REGION, TIMEOUT, MAX_DIGITS, MESSAGES) {
             return;
         }
 
-        const url = `${BASE_URL}/movie/${movieId}/videos?api_key=${KEY}&region=${REGION}`;
+        const detailsUrl = `${BASE_URL}/movie/${movieId}?api_key=${KEY}`;
+        const detailsResponse = await axios.get(detailsUrl, { timeout: TIMEOUT });
+        const originalLanguage = detailsResponse.data.original_language;
+
+        const languages = languagesArray.includes(originalLanguage)
+            ? languagesArray.join(",")
+            : [...languagesArray.slice(0, -1), originalLanguage].join(",");
+
+        const url = `${BASE_URL}/movie/${movieId}/videos?api_key=${KEY}&region=${REGION}&include_video_language=${languages}`;
         const response = await axios.get(url, { timeout: TIMEOUT });
         const videoData = response.data.results;
 
@@ -28,7 +38,7 @@ async function trailer(interaction, REGION, TIMEOUT, MAX_DIGITS, MESSAGES) {
             return;
         }
         
-        await interaction.editReply(getTrailer(videoData));
+        await interaction.editReply(getTrailer(videoData, originalLanguage));
     } catch (error) {
         if (error.response?.status === 404) {
             await interaction.editReply(MESSAGES.NO_FILM);
@@ -83,45 +93,62 @@ async function trailer(interaction, REGION, TIMEOUT, MAX_DIGITS, MESSAGES) {
         return IMDB.test(input);
     };
 
-    function getTrailer(videos) {
+    function getTrailer(videos, originalLanguage) {
         const videoTypes = ["teaser", "clip", "featurette", "behind the scenes", "bloopers"];
 
-        let trailer = null;
-        let fallbackOfficial = null;
-        let fallbackAny = null;
+        let trailer = findBestTrailerInLanguage(videos, "en");
         
-        // Loop through all videos to find the best trailer
-        for (const video of videos) {
-            if (video.type.toLowerCase() !== "trailer") continue;
-            
-            const hasTrailerName = video.name.toLowerCase().includes("trailer");
-            const isOfficial = video.official === true;
-            
-            // Best case: video is "trailer" video type AND has "trailer" in name AND is official
-            if (hasTrailerName && isOfficial) {
-                trailer = video;
-                break;
-            }
-            // Second best: store first official trailer found (even without "trailer" in name)
-            if (!fallbackOfficial && isOfficial) fallbackOfficial = video;
-            // Third best: store any trailer found
-            if (!fallbackAny) fallbackAny = video;
+        if (!trailer && originalLanguage !== "en") {
+            trailer = findBestTrailerInLanguage(videos, originalLanguage);
         }
         
-        trailer = trailer || fallbackOfficial || fallbackAny;
+        if (!trailer) {
+            const allTrailers = videos.filter(v => v.type.toLowerCase() === "trailer");
+            trailer = selectBestTrailer(allTrailers);
+        }
         
         // If a trailer was found, get its link
         if (trailer) {
-            return getLinkType(trailer);    
+            return `trailer: ${getLinkType(trailer)}`;    
         } else {
             // If no trailer found, search for other video types in order of preference
             for (const type of videoTypes) {
                 const video = videos.find(video => video.type.toLowerCase() === type.toLowerCase());
                 if (video) {
-                    return getLinkType(video);  
+                    return `${type}: ${getLinkType(video)}`;    
                 }
             }
         }
+    };
+
+    function selectBestTrailer(trailerVideos) {
+        let trailer = null;
+        let fallbackOfficial = null;
+        let fallbackAny = null;
+        
+        for (const video of trailerVideos) {
+            const hasTrailerName = video.name.toLowerCase().includes("trailer");
+            const isOfficial = video.official === true;
+            
+            // Best case: has "trailer" in name AND is official
+            if (hasTrailerName && isOfficial) {
+                trailer = video;
+                break;
+            }
+            // Second best: official trailer
+            if (!fallbackOfficial && isOfficial) fallbackOfficial = video;
+            // Third best: any trailer
+            if (!fallbackAny) fallbackAny = video;
+        }
+        
+        return trailer || fallbackOfficial || fallbackAny;
+    };
+
+    function findBestTrailerInLanguage(videos, language) {
+        const languageVideos = videos.filter(v => 
+            v.iso_639_1 === language && v.type.toLowerCase() === "trailer"
+        );
+        return selectBestTrailer(languageVideos);
     };
 
     function getLinkType(video) {

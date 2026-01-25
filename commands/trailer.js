@@ -108,15 +108,13 @@ async function trailer(interaction, REGION, TIMEOUT, MAX_DIGITS, MESSAGES) {
         }
         
         // If a trailer was found, get its link
-        if (trailer) {
-            return `trailer: ${getLinkType(trailer)}`;    
-        } else {
-            // If no trailer found, search for other video types in order of preference
-            for (const type of videoTypes) {
-                const video = videos.find(video => video.type.toLowerCase() === type.toLowerCase());
-                if (video) {
-                    return `${type}: ${getLinkType(video)}`;    
-                }
+        if (trailer) return `trailer: ${getLinkType(trailer)}`;
+
+        // If no trailer found, search for other video types in order of preference
+        for (const type of videoTypes) {
+            const video = videos.find(video => video.type.toLowerCase() === type.toLowerCase());
+            if (video) {
+                return `${type}: ${getLinkType(video)}`;    
             }
         }
     };
@@ -140,7 +138,6 @@ async function trailer(interaction, REGION, TIMEOUT, MAX_DIGITS, MESSAGES) {
             // Third best: any trailer
             if (!fallbackAny) fallbackAny = video;
         }
-        
         return trailer || fallbackOfficial || fallbackAny;
     };
 
@@ -152,9 +149,8 @@ async function trailer(interaction, REGION, TIMEOUT, MAX_DIGITS, MESSAGES) {
     };
 
     function getLinkType(video) {
-        if (video.site === "YouTube") {
-            return `https://www.youtube.com/watch?v=${video.key}`;
-        }
+        if (video.site === "YouTube") return `https://www.youtube.com/watch?v=${video.key}`;
+        
         return `https://www.vimeo.com/${video.key}`;
     };
 };

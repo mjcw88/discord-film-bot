@@ -108,15 +108,22 @@ async function trailer(interaction, REGION, TIMEOUT, MAX_DIGITS, MESSAGES) {
         }
         
         // If a trailer was found, get its link
-        if (trailer) return `trailer: ${getLinkType(trailer)}`;
+        if (trailer) return `${getLinkType(trailer)}`;
 
         // If no trailer found, search for other video types in order of preference
         for (const type of videoTypes) {
             const video = videos.find(video => video.type.toLowerCase() === type.toLowerCase());
             if (video) {
-                return `${type}: ${getLinkType(video)}`;    
+                return `${getLinkType(video)}`;    
             }
         }
+    };
+
+    function findBestTrailerInLanguage(videos, language) {
+        const languageVideos = videos.filter(v => 
+            v.iso_639_1 === language && v.type.toLowerCase() === "trailer"
+        );
+        return selectBestTrailer(languageVideos);
     };
 
     function selectBestTrailer(trailerVideos) {
@@ -133,19 +140,14 @@ async function trailer(interaction, REGION, TIMEOUT, MAX_DIGITS, MESSAGES) {
                 trailer = video;
                 break;
             }
+            
             // Second best: official trailer
             if (!fallbackOfficial && isOfficial) fallbackOfficial = video;
+
             // Third best: any trailer
             if (!fallbackAny) fallbackAny = video;
         }
         return trailer || fallbackOfficial || fallbackAny;
-    };
-
-    function findBestTrailerInLanguage(videos, language) {
-        const languageVideos = videos.filter(v => 
-            v.iso_639_1 === language && v.type.toLowerCase() === "trailer"
-        );
-        return selectBestTrailer(languageVideos);
     };
 
     function getLinkType(video) {

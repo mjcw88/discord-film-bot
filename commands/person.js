@@ -2,7 +2,7 @@ const axios = require("axios");
 const { EmbedBuilder } = require("discord.js");
 
 // Main async function that fetches and displays a person's info
-async function person(interaction, REGION, TIMEOUT, MAX_DIGITS, MESSAGES) {
+async function person(interaction, REGION, TIMEOUT, MAX_DIGITS, MESSAGES, getRandomColour, getRandomItensifier) {
     const BASE_URL = "https://api.themoviedb.org/3";
     const KEY = process.env.TMDB_API_KEY;
 
@@ -11,6 +11,7 @@ async function person(interaction, REGION, TIMEOUT, MAX_DIGITS, MESSAGES) {
     try {
         // Defer the reply to prevent the interaction from timing out
         await interaction.deferReply();
+        await interaction.editReply(MESSAGES.LOADING);
             
         const personId = await getID(input);
 
@@ -29,12 +30,20 @@ async function person(interaction, REGION, TIMEOUT, MAX_DIGITS, MESSAGES) {
             .setTitle(`\u200E\u200B${personData.name}`)
             .setThumbnail(`https://image.tmdb.org/t/p/w500${personData.profile_path}`)
             .setDescription(`\u200E\u200B${personData.biography || "Biography unavailable."}`)
+            .setColor(getRandomColour());
         
         embed.addFields({ name: "🔎 - Known For", value: getKnownFor(personData.known_for_department), inline: true },
             { name: "🔎 - Known Credits", value: getCredits(creditsData), inline: true },
-            { name: "🗺️ - Place of Birth", value: `\u200E\u200B${getBirthPlace(personData.place_of_birth)}` },
-            { name: "🎂 - Date of Birth", value: getBirthDay(personData.birthday, personData.deathday) },
+
         );
+
+        if (personData.place_of_birth) {
+             embed.addFields({ name: "🗺️ - Place of Birth", value: `\u200E\u200B${getBirthPlace(personData.place_of_birth)}` })
+        };
+
+        if (personData.birthday) {
+             embed.addFields({ name: "🎂 - Date of Birth", value: getBirthDay(personData.birthday, personData.deathday) })
+        };
 
         if (personData.deathday) {
             embed.addFields({ name: "☠️ - Date of Death", value: getDeathDay(personData.birthday, personData.deathday) });
@@ -42,7 +51,7 @@ async function person(interaction, REGION, TIMEOUT, MAX_DIGITS, MESSAGES) {
 
         embed.addFields({ name: '🔗 - Links', value: getLinks(personId, personData.imdb_id, personData.homepage) });
 
-        await interaction.editReply({ embeds: [embed] });     
+        await interaction.editReply({ content: `Here's your ${getRandomItensifier()} bio:`, embeds: [embed] });     
     } catch (error) {
         if (error.response?.status === 404) {
             await interaction.editReply(MESSAGES.NO_PERSON);
@@ -96,18 +105,21 @@ async function person(interaction, REGION, TIMEOUT, MAX_DIGITS, MESSAGES) {
     };
 
     function getBirthPlace(birthPlace) {
-        return birthPlace ?? MESSAGES.NONE;
+        return birthPlace;
     };
 
     function getBirthDay(birthday, deathday) {
-        return deathday ? formatDateWithoutAge(birthday) || MESSAGES.NONE : birthday ? formatDateWithAge(birthday) : MESSAGES.NONE;
+        return deathday ? formatDate(birthday) : formatDateWithAge(birthday);
     };
 
     function getDeathDay(birthday, deathday) {
-        const ageAtDeath = calculateAgeAtDeath(new Date(birthday), new Date(deathday));
-        const year = ageAtDeath === 1 ? "year" : "years";
-        const age = `\n(${ageAtDeath} ${year} old)`;
-        return `${formatDateWithoutAge(deathday)} ${age}`;
+        if (birthday) {
+            const ageAtDeath = calculateAgeAtDeath(new Date(birthday), new Date(deathday));
+            const year = ageAtDeath === 1 ? "year" : "years";
+            const age = `\n(${ageAtDeath} ${year} old)`;
+            return `${formatDate(deathday)} ${age}`;
+        }
+            return `${formatDate(deathday)}`;
     };
 
     function calculateAgeAtDeath(birthDate, deathDate) {
@@ -122,7 +134,7 @@ async function person(interaction, REGION, TIMEOUT, MAX_DIGITS, MESSAGES) {
         return age;
     };
 
-    function formatDateWithoutAge(rawDate) {
+    function formatDate(rawDate) {
         const date = new Date(rawDate);
         const day = date.getDate();
         const month = date.toLocaleString("en-GB", { month: "short" });
